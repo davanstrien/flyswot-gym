@@ -148,7 +148,7 @@ def prep_data(ds_checkpoint="davanstrien/flysheet", model_checkpoint=None):
     labels = ds.info.features['label'].names
     id2label = dict(enumerate(labels))
     label2id = {v:k for k,v in id2label.items()}
-    train,valid, test = prepare_dataset(ds)
+    train, valid, test = prepare_dataset(ds)
     train_ds, valid_ds, test_ds = prepare_transforms(model_checkpoint, train, valid, test)
     return train_ds, valid_ds, test_ds, id2label, label2id
 
@@ -186,7 +186,7 @@ def train_model(ds_checkpoint, model_checkpoint, num_epochs, save_dir,tune=False
     logging_dir='logs',
     remove_unused_columns=False,
     save_total_limit=10,
-        optim=AdamW,
+        optim="adamw_torch",
     seed=666,
 )
     f1 = load_metric("f1")
