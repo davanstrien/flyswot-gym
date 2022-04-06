@@ -5,8 +5,8 @@ __all__ = ['return_base_path_deduplicated', 'check_uniques', 'drop_duplicates', 
            'train_model']
 
 # Cell
-from torch.optim import AdamW
 import transformers
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 
 from collections import OrderedDict
 from typing import Union, Tuple, Sequence, Set
