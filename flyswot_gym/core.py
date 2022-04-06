@@ -161,8 +161,8 @@ def collate_fn(examples):
 # Cell
 def train_model(ds_checkpoint,
                 model_checkpoint,
-                num_epochs,
-                save_dir,
+                num_epochs=50,
+                save_dir="flyswot_model",
                 hub_model_id="flyswot",
                 tune=False):
     transformers.logging.set_verbosity_warning()
@@ -176,7 +176,7 @@ def train_model(ds_checkpoint,
     # else:
     #     disable_tqdm = False
     args = TrainingArguments(
-    f"save_dir/{model_checkpoint}_flyswot",
+    f"{save_dir}",
     save_strategy="epoch",
     evaluation_strategy="epoch",
         hub_model_id=f"flyswot/{hub_model_id}",
