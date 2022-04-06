@@ -159,7 +159,12 @@ def collate_fn(examples):
     return {"pixel_values": pixel_values, "labels": labels}
 
 # Cell
-def train_model(ds_checkpoint, model_checkpoint, num_epochs, save_dir,tune=False):
+def train_model(ds_checkpoint,
+                model_checkpoint,
+                num_epochs,
+                save_dir,
+                hub_model_id="flyswot",
+                tune=False):
     transformers.logging.set_verbosity_warning()
     train_ds, valid_ds, test_ds, id2label, label2id = prep_data(ds_checkpoint,model_checkpoint=model_checkpoint)
     model = AutoModelForImageClassification.from_pretrained(model_checkpoint, num_labels=len(id2label),
@@ -174,6 +179,8 @@ def train_model(ds_checkpoint, model_checkpoint, num_epochs, save_dir,tune=False
     f"save_dir/{model_checkpoint}_flyswot",
     save_strategy="epoch",
     evaluation_strategy="epoch",
+        push_to_hub_model_id=hub_model_id,
+        push_to_hub_organization="flyswot",
     push_to_hub=False,
     learning_rate=2e-5,
     per_device_train_batch_size=4,
