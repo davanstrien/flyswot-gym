@@ -1,24 +1,7 @@
-# Project name here
+# flyswot-gym 
 > “When you go through hardships and decide not to surrender, that is strength.” - Arnold Schwarzenegger
 
 
-This file will become your README and also the index of your documentation.
+flyswot-gym is a set of functions for helping to train [flyswot](github.com/davanstrien/flyswot/) models. 
 
-## Install
-
-`pip install your_project_name`
-
-## How to use
-
-Fill me in please! Don't forget code examples:
-
-```python
-1+1
-```
-
-
-
-
-    2
-
-
+`pip install git+https://github.com/davanstrien/flyswot-gym.git`
