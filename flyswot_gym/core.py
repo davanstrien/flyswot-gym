@@ -161,7 +161,7 @@ def collate_fn(examples):
 # Cell
 def train_model(ds_checkpoint, model_checkpoint, num_epochs, save_dir,tune=False):
     transformers.logging.set_verbosity_warning()
-    train_ds, valid_ds, test_ds, id2label, label2id = load_data(ds_checkpoint,model_checkpoint=model_checkpoint)
+    train_ds, valid_ds, test_ds, id2label, label2id = prep_data(ds_checkpoint,model_checkpoint=model_checkpoint)
     model = AutoModelForImageClassification.from_pretrained(model_checkpoint, num_labels=len(id2label),
                                                    id2label=id2label,
                                                   label2id=label2id, ignore_mismatched_sizes=True)
