@@ -176,12 +176,12 @@ def train_model(ds_checkpoint,
     # else:
     #     disable_tqdm = False
     args = TrainingArguments(
-    ".",
+    "output_dir",
     save_strategy="epoch",
     evaluation_strategy="epoch",
     hub_model_id=f"flyswot/{hub_model_id}",
     overwrite_output_dir=True,
-    push_to_hub=False,
+    push_to_hub=True,
     learning_rate=2e-5,
     per_device_train_batch_size=4,
     per_device_eval_batch_size=4,
