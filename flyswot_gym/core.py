@@ -7,7 +7,7 @@ __all__ = ['return_base_path_deduplicated', 'check_uniques', 'drop_duplicates', 
 # Cell
 import transformers
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
-
+from dataclasses import asdict
 from collections import OrderedDict
 from typing import Union, Tuple, Sequence, Set
 from numpy.random import RandomState
@@ -32,6 +32,7 @@ from transformers import AutoModelForImageClassification
 from datasets import load_metric
 from rich import print
 import re
+from dataclasses import dataclass
 
 # Cell
 def return_base_path_deduplicated(x):
@@ -150,7 +151,7 @@ def prep_data(ds_checkpoint="davanstrien/flysheet", model_checkpoint=None):
     label2id = {v:k for k,v in id2label.items()}
     train, valid, test = prepare_dataset(ds)
     train_ds, valid_ds, test_ds = prepare_transforms(model_checkpoint, train, valid, test)
-    return train_ds, valid_ds, test_ds, id2label, label2id
+    return flysotData(train_ds, valid_ds, test_ds, id2label, label2id)
 
 # Cell
 def collate_fn(examples):
@@ -159,22 +160,19 @@ def collate_fn(examples):
     return {"pixel_values": pixel_values, "labels": labels}
 
 # Cell
-def train_model(ds_checkpoint,
+def train_model(data,
                 model_checkpoint,
                 num_epochs=50,
                 save_dir="flyswot_model",
                 hub_model_id="flyswot",
-                tune=False):
+                tune=False,
+               fp16=True):
     transformers.logging.set_verbosity_warning()
-    train_ds, valid_ds, test_ds, id2label, label2id = prep_data(ds_checkpoint,model_checkpoint=model_checkpoint)
+    train_ds, valid_ds, test_ds, id2label, label2id = asdict(data).items()
     model = AutoModelForImageClassification.from_pretrained(model_checkpoint, num_labels=len(id2label),
                                                    id2label=id2label,
                                                   label2id=label2id, ignore_mismatched_sizes=True)
     feature_extractor = AutoFeatureExtractor.from_pretrained(model_checkpoint)
-    # if tune:
-    #     disable_tqdm = True
-    # else:
-    #     disable_tqdm = False
     args = TrainingArguments(
     "output_dir",
     save_strategy="epoch",
@@ -187,14 +185,14 @@ def train_model(ds_checkpoint,
     per_device_eval_batch_size=4,
     num_train_epochs=num_epochs,
     weight_decay=0.1,disable_tqdm=False,
-    fp16=False,
+    fp16=fp16,
     load_best_model_at_end=True,
     metric_for_best_model="f1",
     logging_dir='logs',
     remove_unused_columns=False,
     save_total_limit=10,
-        optim="adamw_torch",
-    seed=666,
+    optim="adamw_torch",
+    seed=42,
 )
     f1 = load_metric("f1")
 
