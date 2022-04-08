@@ -145,13 +145,16 @@ def prepare_transforms(model_checkpoint, train_ds, valid_ds, test_ds=None):
 
 # Cell
 def prep_data(ds_checkpoint="davanstrien/flysheet", model_checkpoint=None):
-    ds = load_dataset(ds_checkpoint, use_auth_token=True, streaming=False, split='train')
-    labels = ds.info.features['label'].names
-    id2label = dict(enumerate(labels))
-    label2id = {v:k for k,v in id2label.items()}
-    train, valid, test = prepare_dataset(ds)
-    train_ds, valid_ds, test_ds = prepare_transforms(model_checkpoint, train, valid, test)
-    return flysotData(train_ds, valid_ds, test_ds, id2label, label2id)
+    try:
+        ds = load_dataset(ds_checkpoint, use_auth_token=True, streaming=False, split='train')
+        labels = ds.info.features['label'].names
+        id2label = dict(enumerate(labels))
+        label2id = {v:k for k,v in id2label.items()}
+        train, valid, test = prepare_dataset(ds)
+        train_ds, valid_ds, test_ds = prepare_transforms(model_checkpoint, train, valid, test)
+        return flysotData(train_ds, valid_ds, test_ds, id2label, label2id)
+    except FileNotFoundError as e:
+        print(f"{e} make sure you are logged into the Hugging Face Hub")
 
 # Cell
 def collate_fn(examples):
