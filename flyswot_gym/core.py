@@ -227,21 +227,22 @@ def train_model(data,
     return trainer
 
 # Cell
-def plot_confusion_matrix(outputs):
+def plot_confusion_matrix(outputs, trainer):
     from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
     import matplotlib.pyplot as plt
     fig, ax = plt.subplots(figsize=(15, 15))
     y_true = outputs.label_ids
     y_pred = outputs.predictions.argmax(1)
-    labels =train_ds.features['label'].names
+    labels =trainer.model.config.id2label.values()
     cm = confusion_matrix(y_true, y_pred)
     disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=labels)
     disp.plot(xticks_rotation=45, ax=ax)
 
 
 # Cell
-def print_classification_report(outputs):
+def print_classification_report(outputs, trainer):
     from sklearn.metrics import classification_report
     y_true = outputs.label_ids
     y_pred = outputs.predictions.argmax(1)
-    print(classification_report(y_true, y_pred, target_names=train_ds.features['label'].names))
+    labels =trainer.model.config.id2label.values()
+    print(classification_report(y_true, y_pred, target_names=labels))
