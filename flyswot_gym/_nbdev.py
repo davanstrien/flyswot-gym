@@ -15,7 +15,7 @@ index = {"return_base_path_deduplicated": "00_core.ipynb",
          "collate_fn": "00_core.ipynb",
          "train_model": "00_core.ipynb",
          "plot_confusion_matrix": "00_core.ipynb",
-         "print_classification_report": "00_core.ipynb"}
+         "create_classification_report": "00_core.ipynb"}
 
 modules = ["core.py"]
 

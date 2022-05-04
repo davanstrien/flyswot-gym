@@ -2,7 +2,7 @@
 
 __all__ = ['return_base_path_deduplicated', 'check_uniques', 'drop_duplicates', 'get_id', 'split_w_stratify',
            'train_valid_split_w_stratify', 'prepare_dataset', 'prepare_transforms', 'flysotData', 'prep_data',
-           'collate_fn', 'train_model', 'plot_confusion_matrix', 'print_classification_report']
+           'collate_fn', 'train_model', 'plot_confusion_matrix', 'create_classification_report']
 
 # Cell
 import transformers
@@ -200,8 +200,8 @@ def train_model(data,
     num_train_epochs=num_epochs,
     weight_decay=0.1,disable_tqdm=False,
     fp16=fp16,
-    load_best_model_at_end=True,
-    metric_for_best_model="f1",
+   # load_best_model_at_end=True,
+  #  metric_for_best_model="f1",
     logging_dir='logs',
     remove_unused_columns=False,
     save_total_limit=10,
@@ -212,7 +212,16 @@ def train_model(data,
 
     def compute_metrics(eval_pred):
         predictions, labels = eval_pred
+        id2label = model.config.id2label
         predictions = np.argmax(predictions, axis=1)
+        # report = classification_report(labels,
+        #               predictions, output_dict=True,zero_division=0)
+        # per_label = {}
+        # for k,v in report.items():
+        #     if k.isdigit():
+        #         label = id2label[int(k)]
+        #         metrics = v['f1-score']
+        #         per_label[f"{label}_f1"] = metrics
         return f1.compute(predictions=predictions, references=labels, average='macro')
 
 
@@ -240,9 +249,9 @@ def plot_confusion_matrix(outputs, trainer):
 
 
 # Cell
-def print_classification_report(outputs, trainer):
+def create_classification_report(outputs, trainer):
     from sklearn.metrics import classification_report
     y_true = outputs.label_ids
     y_pred = outputs.predictions.argmax(1)
     labels =trainer.model.config.id2label.values()
-    print(classification_report(y_true, y_pred, target_names=labels))
+    return classification_report(y_true, y_pred, target_names=labels, output_dict=True)
