@@ -2,7 +2,8 @@
 
 __all__ = ['return_base_path_deduplicated', 'check_uniques', 'drop_duplicates', 'get_id', 'split_w_stratify',
            'train_valid_split_w_stratify', 'prepare_dataset', 'prepare_transforms', 'flysotData', 'prep_data',
-           'collate_fn', 'train_model', 'plot_confusion_matrix', 'create_classification_report']
+           'collate_fn', 'train_model', 'plot_confusion_matrix', 'create_classification_report',
+           'create_misclassified_report']
 
 # Cell
 import transformers
@@ -255,3 +256,21 @@ def create_classification_report(outputs, trainer):
     y_pred = outputs.predictions.argmax(1)
     labels =trainer.model.config.id2label.values()
     return classification_report(y_true, y_pred, target_names=labels, output_dict=True)
+
+# Cell
+def create_misclassified_report(outputs,trainer, important_label=None, print_results=True):
+    id2label = trainer.model.config.id2label
+    y_true = outputs.label_ids
+    y_pred = outputs.predictions.argmax(1)
+    df = pd.DataFrame({"y_true":y_true,"y_pred": y_pred})
+    df.y_true = df.y_true.map(id2label)
+    df.y_pred = df.y_pred.map(id2label)
+    if print_results:
+        misclassified_df = df[df.y_true != df.y_pred]
+        print('misclassified:')
+        print(misclassified_df)
+        print('\n')
+        if important_label:
+            print(f"Number of wrong predictions of {important_label} label: {len(misclassied[misclassied['y_pred']==important_label])}")
+            print(f"Percentage of wrong predictions of {important_label} label: {(len(misclassied[misclassied['y_pred']==important_label])/len(df))*100}")
+        return misclassified_df
