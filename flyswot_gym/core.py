@@ -259,7 +259,7 @@ def create_classification_report(outputs, trainer):
     return classification_report(y_true, y_pred, target_names=labels, output_dict=True)
 
 # Cell
-def create_misclassified_report(outputs,trainer, important_label=None, print_results=True):
+def create_misclassified_report(outputs,trainer, important_label=None, print_results=True, return_df=False):
     id2label = trainer.model.config.id2label
     y_true = outputs.label_ids
     y_pred = outputs.predictions.argmax(1)
@@ -274,4 +274,5 @@ def create_misclassified_report(outputs,trainer, important_label=None, print_res
         if important_label:
             print(f"Number of wrong predictions of {important_label} label: {len(misclassied[misclassied['y_pred']==important_label])}")
             print(f"Percentage of wrong predictions of {important_label} label: {(len(misclassied[misclassied['y_pred']==important_label])/len(df))*100}")
+    if return_df:
         return misclassified_df
