@@ -267,12 +267,12 @@ def create_misclassified_report(outputs,trainer, important_label=None, print_res
     df.y_true = df.y_true.map(id2label)
     df.y_pred = df.y_pred.map(id2label)
     if print_results:
-        misclassified_df = df[df.y_true != df.y_pred]
-        print('misclassified:')
+        misclasified_df = df[df.y_true != df.y_pred]
+        print('misclasified:')
         print(misclassified_df)
         print('\n')
         if important_label:
-            print(f"Number of wrong predictions of {important_label} label: {len(misclassied[misclassied['y_pred']==important_label])}")
-            print(f"Percentage of wrong predictions of {important_label} label: {(len(misclassied[misclassied['y_pred']==important_label])/len(df))*100}")
+            print(f"Number of wrong predictions of {important_label} label: {len(misclassified_df[misclassified_df['y_pred']==important_label])}")
+            print(f"Percentage of wrong predictions of {important_label} label: {(len(misclassified_df[misclassified_df['y_pred']==important_label])/len(df))*100}")
     if return_df:
         return misclassified_df
