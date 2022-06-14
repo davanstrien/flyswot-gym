@@ -265,9 +265,9 @@ def create_misclassified_report(outputs,trainer, important_label=None, print_res
     y_true = outputs.label_ids
     y_pred = outputs.predictions.argmax(1)
     y_prob = softmax(outputs.predictions, axis=1)
-    df = pd.DataFrame({"y_true":y_true,"y_pred": y_pred, "y_prob": y_prob.max(1)})
-    df.y_true = df.y_true.map(id2label)
-    df.y_pred = df.y_pred.map(id2label)
+    misclasified_df = pd.DataFrame({"y_true":y_true,"y_pred": y_pred, "y_prob": y_prob.max(1)})
+    misclasified_df.y_true = misclasified_df.y_true.map(id2label)
+    misclasified_df.y_pred = misclasified_df.y_pred.map(id2label)
     if print_results:
         misclasified_df = df[df.y_true != df.y_pred]
         print('misclasified:')
