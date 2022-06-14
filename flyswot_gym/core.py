@@ -37,6 +37,7 @@ from dataclasses import dataclass
 from typing import Dict
 import datasets
 import pandas as pd
+from scipy.special import softmax
 
 # Cell
 def return_base_path_deduplicated(x):
@@ -263,7 +264,8 @@ def create_misclassified_report(outputs,trainer, important_label=None, print_res
     id2label = trainer.model.config.id2label
     y_true = outputs.label_ids
     y_pred = outputs.predictions.argmax(1)
-    df = pd.DataFrame({"y_true":y_true,"y_pred": y_pred})
+    y_prob = softmax(outputs.predictions, axis=1)
+    df = pd.DataFrame({"y_true":y_true,"y_pred": y_pred, "y_prob": y_prob.max(1)})
     df.y_true = df.y_true.map(id2label)
     df.y_pred = df.y_pred.map(id2label)
     if print_results:
