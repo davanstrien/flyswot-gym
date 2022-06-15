@@ -3,7 +3,7 @@
 __all__ = ['return_base_path_deduplicated', 'check_uniques', 'drop_duplicates', 'get_id', 'split_w_stratify',
            'train_valid_split_w_stratify', 'prepare_dataset', 'prepare_transforms', 'FlyswotData', 'prep_data',
            'collate_fn', 'train_model', 'plot_confusion_matrix', 'create_classification_report',
-           'create_test_results_df', 'create_misclassified_report']
+           'create_test_results_df', 'create_mistakes_image_navigator', 'create_misclassified_report']
 
 # Cell
 import transformers
@@ -260,11 +260,12 @@ def create_classification_report(outputs, trainer):
     return classification_report(y_true, y_pred, target_names=labels, output_dict=True)
 
 # Cell
-def create_test_results_df(outputs, trainer, test_data, important_label=None, print_results=True, return_df=False):
+def create_test_results_df(outputs, trainer, important_label=None, print_results=True, return_df=False) -> pd.DataFrame:
     id2label = trainer.model.config.id2label
     y_true = outputs.label_ids
     y_pred = outputs.predictions.argmax(1)
     y_prob = softmax(outputs.predictions, axis=1)
+   # ids = test_data['id']
     df = pd.DataFrame({"y_true":y_true,"y_pred": y_pred, "y_prob": y_prob.max(1)})
     df.y_true = df.y_true.map(id2label)
     df.y_pred = df.y_pred.map(id2label)
@@ -279,6 +280,30 @@ def create_test_results_df(outputs, trainer, test_data, important_label=None, pr
     if return_df:
         return df
 
+
+# Cell
+def create_mistakes_image_navigator(test_results_df, flyswot_data,trainer):
+    import panel as pn
+    pn.extension()
+    df = test_results_df
+    mistakes = df.y_true!=df.y_pred
+    mistake_ids = df.index[mistakes].tolist()
+    df = df[mistakes]
+    subset = flyswot_data.test_ds.select(mistake_ids)
+    index_selection = pn.widgets.DiscreteSlider(options=df.index.to_list())
+    id2label = trainer.model.config.id2label
+    @pn.depends(index_selection)
+    def get_image(selection):
+        image = flyswot_data.test_ds[selection]['image']
+        image = pn.Pane(image)
+        row = flyswot_data.test_ds[selection]
+        string_label = id2label[row['label']]
+       # label =  pn.pane.Markdown(f"""actual label: **{string_label}**""")
+        df_row = df.iloc[selection]
+        r = pn.Row(image, pn.Pane(df_row))
+        return r
+    df = df.reset_index(drop=True)
+    return pn.Column(index_selection,get_image)
 
 # Cell
 def create_misclassified_report(outputs, trainer, test_data, important_label=None, print_results=True, return_df=False):
