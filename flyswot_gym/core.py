@@ -291,14 +291,18 @@ def create_mistakes_image_navigator(test_results_df, flyswot_data,trainer):
     df = df[mistakes]
     df = df.reset_index(drop=True)
     subset = flyswot_data.test_ds.select(mistake_ids)
+    assert len(df) == len(subset)
+    if len(df)<1:
+        print(df)
+        return subset['image'][0]
     index_selection = pn.widgets.DiscreteSlider(options=df.index.to_list())
     id2label = trainer.model.config.id2label
     @pn.depends(index_selection)
     def get_image(selection):
-        image = flyswot_data.test_ds[selection]['image']
+        image = subset[selection]['image']
         image = pn.Pane(image)
-        row = flyswot_data.test_ds[selection]
-        string_label = id2label[row['label']]
+        #row = flyswot_data.test_ds[selection]
+       # string_label = id2label[row['label']]
        # label =  pn.pane.Markdown(f"""actual label: **{string_label}**""")
         df_row = df.iloc[selection]
         r = pn.Row(image, pn.Pane(df_row))
