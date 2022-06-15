@@ -289,6 +289,7 @@ def create_mistakes_image_navigator(test_results_df, flyswot_data,trainer):
     mistakes = df.y_true!=df.y_pred
     mistake_ids = df.index[mistakes].tolist()
     df = df[mistakes]
+    df = df.reset_index(drop=True)
     subset = flyswot_data.test_ds.select(mistake_ids)
     index_selection = pn.widgets.DiscreteSlider(options=df.index.to_list())
     id2label = trainer.model.config.id2label
