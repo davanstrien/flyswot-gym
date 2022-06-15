@@ -30,7 +30,7 @@ from torchvision.transforms import (CenterCrop,
 import torch
 from transformers import AutoFeatureExtractor, TrainingArguments, Trainer
 from transformers import AutoModelForImageClassification
-from datasets import load_metric
+from evaluate import load as load_metric
 from rich import print
 import re
 from dataclasses import dataclass
@@ -204,28 +204,41 @@ def train_model(data,
     weight_decay=0.1,disable_tqdm=False,
     fp16=fp16,
    # load_best_model_at_end=True,
-  #  metric_for_best_model="f1",
+    #metric_for_best_model="f1",
     logging_dir='logs',
     remove_unused_columns=False,
     save_total_limit=10,
     optim="adamw_torch",
     seed=42,
 )
-    f1 = load_metric("f1")
-
     def compute_metrics(eval_pred):
-        predictions, labels = eval_pred
-        id2label = model.config.id2label
-        predictions = np.argmax(predictions, axis=1)
-        # report = classification_report(labels,
-        #               predictions, output_dict=True,zero_division=0)
-        # per_label = {}
-        # for k,v in report.items():
-        #     if k.isdigit():
-        #         label = id2label[int(k)]
-        #         metrics = v['f1-score']
-        #         per_label[f"{label}_f1"] = metrics
-        return f1.compute(predictions=predictions, references=labels, average='macro')
+        precision_metric = load_metric("precision")
+        recall_metric = load_metric("recall")
+        f1_metric = load_metric("f1")
+        accuracy_metric = load_metric("accuracy")
+
+        logits, labels = eval_pred
+        predictions = np.argmax(logits, axis=-1)
+        precision = precision_metric.compute(predictions=predictions, references=labels,average='macro')["precision"]
+        recall = recall_metric.compute(predictions=predictions, references=labels,average='macro')["recall"]
+        f1 = f1_metric.compute(predictions=predictions, references=labels,average='macro')['f1']
+        accuracy = accuracy_metric.compute(predictions=predictions, references=labels)['accuracy']
+        return {"precision": precision, "recall": recall, "f1":f1, "accuracy":accuracy}
+
+
+    # def compute_metrics(eval_pred):
+    #     predictions, labels = eval_pred
+    #     id2label = model.config.id2label
+    #     predictions = np.argmax(predictions, axis=1)
+    #     # report = classification_report(labels,
+    #     #               predictions, output_dict=True,zero_division=0)
+    #     # per_label = {}
+    #     # for k,v in report.items():
+    #     #     if k.isdigit():
+    #     #         label = id2label[int(k)]
+    #     #         metrics = v['f1-score']
+    #     #         per_label[f"{label}_f1"] = metrics
+    #     return f1.compute(predictions=predictions, references=labels, average='macro')
 
 
     trainer = Trainer(model,
