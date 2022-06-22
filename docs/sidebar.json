@@ -1,8 +1,7 @@
 {
   "flyswot_gym": {
     "Overview": "/",
-    "module name here": "core.html",
-    "flyswot-gym \ud83e\uddbe": "flyswot_gym.html",
-    "Title": "optuna.html"
+    "Core functionality": "core.html",
+    "flyswot_gym": "flyswot_gym.html"
   }
 }
