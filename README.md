@@ -23,11 +23,11 @@ Images/
         cats2.jpg
 ```
 
-We use the Hugging Face hub to store the data we are going to use for training. To upload our data from a local file system to the hub, we will use a command line tool `hugit`. This uploads our data to the hub and gets it into a format that can be used to train a computer vision model. 
+We use the Hugging Face hub to store the data we are going to use for training. To upload our data from a local file system to the hub, we will use a command line tool `hugit`. This uploads our data to the hub and gets it into a format that can be used to train a computer vision model. For full instructions on using `hugit` please refer to the [docs](https://hugit-cli.readthedocs.io/en/latest/).
 
 ## Training/updating a model 
 
-<a href="https://colab.research.google.com/github/davanstrien/flyswot-gym/blob/master/flyswot_gym.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a> 
+Once you have your data uploaded to the 🤗 hub we can train our or update a new model. There is a notebok which helps us do this 🦾 <a href="https://colab.research.google.com/github/davanstrien/flyswot-gym/blob/master/flyswot_gym.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a> 
 
 ## Using our model 
 

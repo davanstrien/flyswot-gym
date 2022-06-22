@@ -31,14 +31,77 @@ nb_path: "index.ipynb"
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><code>flyswot-gym</code> is a set of functions for helping to train <code>flyswot</code> models.</p>
+<p><code>flyswot-gym</code> is a set of functions for helping to train <code>flyswot</code> models. This is a WIP and mainly intended for our particular workflow.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><code>pip install git+https://github.com/davanstrien/flyswot-gym.git</code></p>
+<h2 id="%F0%9F%9A%80-Training/updating-a-new-flyswot-model">&#128640; Training/updating a new flyswot model<a class="anchor-link" href="#%F0%9F%9A%80-Training/updating-a-new-flyswot-model"> </a></h2><p>These steps will also work for training other image classification models thought the pipeline isn't intended to cover all possible scenarios to you may not get good results if you are doing something very different.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Loading-our-data">Loading our data<a class="anchor-link" href="#Loading-our-data"> </a></h3><p>The data loading workflow described below assumes that you are working with data structured in an image folder structure. In this structure images are sorted into subdirectories with those directories representing the label for that image. For example:</p>
+
+<pre><code>Images/
+    dogs/
+        dog1.jpg
+        dog2.jpg
+    cats/
+        cats1.jpg
+        cats2.jpg</code></pre>
+<p>We use the Hugging Face hub to store the data we are going to use for training. To upload our data from a local file system to the hub, we will use a command line tool <code>hugit</code>. This uploads our data to the hub and gets it into a format that can be used to train a computer vision model. For full instructions on using <code>hugit</code> please refer to the <a href="https://hugit-cli.readthedocs.io/en/latest/">docs</a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Training/updating-a-model">Training/updating a model<a class="anchor-link" href="#Training/updating-a-model"> </a></h2><p>Once you have your data uploaded to the 🤗 hub we can train our or update a new model. There is a notebok which helps us do this 🦾 <a href="https://colab.research.google.com/github/davanstrien/flyswot-gym/blob/master/flyswot_gym.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Using-our-model">Using our model<a class="anchor-link" href="#Using-our-model"> </a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>For using a new model you can use <a href="https://github.com/davanstrien/flyswot/">flyswot</a>. You can pass in the model ID for your model to let <code>flyswot</code> know which model it should use for making predictions.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+
+<pre><code>Usage: flyswot predict directory [OPTIONS] DIRECTORY CSV_SAVE_DIR
+
+  Predicts against all images stored under DIRECTORY which match PATTERN in the
+  filename.
+
+  By default searches for filenames containing 'fs'.
+
+  Creates a CSV report saved to `csv_save_dir`
+
+Arguments:
+  DIRECTORY     Directory to start searching for images from  [required]
+  CSV_SAVE_DIR  Directory used to store the csv report  [required]
+
+Options:
+  --model-id TEXT       The model flyswot should use for making predictions
+                        [default: flyswot/convnext-tiny-224_flyswot]
+  --pattern TEXT        Pattern used to filter image filenames
+  --bs INTEGER          Batch Size  [default: 16]
+  --image-formats TEXT  Image format(s) to check  [default: .tif]
+  --help                Show this message and exit.</code></pre>
 
 </div>
 </div>
